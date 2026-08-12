@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión del restaurante - 3DFoodMenu</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    header {
+      background: #111;
+      color: white;
+      padding: 22px 30px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    header p {
+      margin: 6px 0 0;
+      color: #bbb;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 35px auto;
+      padding: 0 20px;
+    }
+
+    .cabecera {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .cabecera h2 {
+      margin-top: 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .tarjeta {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      min-height: 150px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .tarjeta h3 {
+      margin-top: 0;
+    }
+
+    .tarjeta p {
+      color: #666;
+    }
+
+    .boton {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 16px;
+      background: #111;
+      color: white;
+      border-radius: 7px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .boton:hover {
+      opacity: 0.85;
+    }
+
+    .volver {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #555;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>3DFoodMenu</h1>
+  <p>Panel de administración</p>
+</header>
+
+<main>
+
+  <a href="admin.html" class="volver">← Volver a restaurantes</a>
+
+  <section class="cabecera">
+    <h2 id="nombreRestaurante">Cargando restaurante...</h2>
+    <p id="descripcionRestaurante">
+      Gestión de la carta digital y modelos 3D.
+    </p>
+  </section>
+
+  <section class="grid">
+
+    <div class="tarjeta">
+      <h3>📋 Carta</h3>
+      <p>Gestiona los platos y categorías del restaurante.</p>
+      <button class="boton">Gestionar carta</button>
+    </div>
+
+    <div class="tarjeta">
+      <h3>🥘 Platos</h3>
+      <p>Añade platos, precios, descripciones e imágenes.</p>
+      <button class="boton">Gestionar platos</button>
+    </div>
+
+    <div class="tarjeta">
+      <h3>🧊 Modelos 3D</h3>
+      <p>Gestiona los modelos 3D asociados a cada plato.</p>
+      <button class="boton">Gestionar modelos 3D</button>
+    </div>
+
+    <div class="tarjeta">
+      <h3>⚙️ Configuración</h3>
+      <p>Configura los datos y opciones del restaurante.</p>
+      <button class="boton">Configuración</button>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  const parametros = new URLSearchParams(window.location.search);
+  const restaurante = parametros.get("restaurante");
+
+  const restaurantes = {
+    "la-plaza": {
+      nombre: "La Plaza",
+      descripcion: "Gestión de la carta 3D de La Plaza."
+    },
+
+    "el-puerto": {
+      nombre: "El Puerto",
+      descripcion: "Gestión de la carta 3D de El Puerto."
+    }
+  };
+
+  const datos = restaurantes[restaurante];
+
+  if (datos) {
+    document.getElementById("nombreRestaurante").textContent = datos.nombre;
+    document.getElementById("descripcionRestaurante").textContent = datos.descripcion;
+    document.title = datos.nombre + " - 3DFoodMenu";
+  } else {
+    document.getElementById("nombreRestaurante").textContent =
+      "Restaurante no encontrado";
+    document.getElementById("descripcionRestaurante").textContent =
+      "No se ha encontrado el restaurante solicitado.";
+  }
+</script>
+
+</body>
+</html>
