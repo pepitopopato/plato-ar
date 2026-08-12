@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>3DFoodMenu - Carta 3D</title>
+  <title>3DFoodMenu | La carta que cobra vida</title>
 
   <script type="module"
     src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.1.0/model-viewer.min.js">
@@ -15,106 +15,217 @@
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f7f7f5;
-      color: #222;
+      background: #f7f6f2;
+      color: #171717;
     }
 
     header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid #eee;
+      padding: 16px 20px;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .hero {
+      min-height: 75vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(180deg, #fff 0%, #f7f6f2 100%);
+    }
+
+    .hero-content {
+      max-width: 700px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 50px;
+      background: #171717;
+      color: white;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 9vw, 76px);
+      line-height: 0.95;
+      margin: 0;
+      letter-spacing: -4px;
+    }
+
+    .subtitle {
+      font-size: 20px;
+      color: #666;
+      margin: 25px auto;
+      line-height: 1.5;
+      max-width: 550px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 15px 24px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .button-primary {
+      background: #171717;
+      color: white;
+    }
+
+    .button-secondary {
+      background: white;
+      color: #171717;
+      border: 1px solid #ddd;
+    }
+
+    section {
+      max-width: 1000px;
+      margin: auto;
+      padding: 70px 20px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 34px;
+      margin-bottom: 12px;
+    }
+
+    .section-text {
+      text-align: center;
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .step {
+      background: white;
+      padding: 25px;
+      border-radius: 18px;
+      border: 1px solid #eee;
+    }
+
+    .step-number {
+      font-size: 30px;
+      margin-bottom: 15px;
+    }
+
+    .step h3 {
+      margin: 0 0 8px;
+    }
+
+    .step p {
+      color: #666;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .menu {
       background: #111;
       color: white;
-      padding: 22px 18px;
-      text-align: center;
+      max-width: none;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-
-    header p {
-      margin: 8px 0 0;
-      color: #ccc;
-      font-size: 14px;
-    }
-
-    main {
-      max-width: 900px;
+    .menu-inner {
+      max-width: 1000px;
       margin: auto;
-      padding: 25px 16px 50px;
+      padding: 70px 20px;
     }
 
-    .intro {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    .intro h2 {
-      margin-bottom: 8px;
-    }
-
-    .intro p {
-      color: #666;
-    }
-
-    .platos {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
+    .menu .section-text {
+      color: #aaa;
     }
 
     .plato {
+      max-width: 500px;
+      margin: auto;
       background: white;
-      border-radius: 18px;
-      padding: 16px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    }
-
-    .plato h3 {
-      margin: 12px 0 5px;
-      font-size: 20px;
-    }
-
-    .plato p {
-      color: #666;
-      font-size: 14px;
-    }
-
-    .precio {
-      font-weight: bold;
-      font-size: 18px;
-      margin: 12px 0;
+      color: #171717;
+      border-radius: 22px;
+      padding: 15px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
     }
 
     model-viewer {
       width: 100%;
-      height: 280px;
+      height: 350px;
       background: #f1f1ef;
-      border-radius: 14px;
+      border-radius: 16px;
     }
 
-    button {
+    .plato-info {
+      padding: 10px 8px 5px;
+    }
+
+    .plato-info h3 {
+      font-size: 23px;
+      margin: 10px 0 6px;
+    }
+
+    .plato-info p {
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .precio {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .ar-button {
       width: 100%;
-      padding: 14px;
       border: 0;
       border-radius: 12px;
-      background: #111;
+      padding: 15px;
+      background: #171717;
       color: white;
       font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
-    }
-
-    button:hover {
-      background: #333;
     }
 
     footer {
       text-align: center;
+      padding: 35px 20px;
+      background: #0b0b0b;
       color: #888;
       font-size: 13px;
-      padding: 25px;
     }
   </style>
 </head>
@@ -122,51 +233,140 @@
 <body>
 
   <header>
-    <h1>3DFoodMenu</h1>
-    <p>Descubre los platos antes de pedir</p>
+    <div class="logo">3DFoodMenu</div>
   </header>
 
   <main>
 
-    <section class="intro">
-      <h2>🍽️ Nuestra carta</h2>
-      <p>Explora nuestros platos en 3D y visualízalos en tu mesa.</p>
-    </section>
+    <section class="hero">
 
-    <section class="platos">
+      <div class="hero-content">
 
-      <article class="plato">
+        <div class="badge">
+          CARTAS DIGITALES EN 3D
+        </div>
 
-        <model-viewer
-          src="modelos/12_8_2026.glb"
-          camera-controls
-          auto-rotate
-          ar
-          shadow-intensity="1"
-          alt="Plato en 3D">
+        <h1>
+          La carta<br>
+          que cobra vida.
+        </h1>
 
-          <button slot="ar-button">
-            📱 Ver en mi mesa
-          </button>
-
-        </model-viewer>
-
-        <h3>Plato de ejemplo</h3>
-
-        <p>
-          Descubre este plato en 3D y comprueba cómo se vería en tu mesa.
+        <p class="subtitle">
+          Escanea el QR de tu mesa, elige un plato
+          y visualízalo en 3D antes de pedir.
         </p>
 
-        <div class="precio">12,90 €</div>
+        <div class="buttons">
+          <a href="#carta" class="button button-primary">
+            🍽️ Ver carta
+          </a>
 
-      </article>
+          <a href="#como-funciona" class="button button-secondary">
+            ¿Cómo funciona?
+          </a>
+        </div>
+
+      </div>
 
     </section>
+
+
+    <section id="como-funciona">
+
+      <h2 class="section-title">
+        ¿Cómo funciona?
+      </h2>
+
+      <p class="section-text">
+        Una nueva forma de descubrir los platos de un restaurante.
+      </p>
+
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-number">📱</div>
+          <h3>1. Escanea</h3>
+          <p>
+            Escanea el código QR que encontrarás en tu mesa.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">🍽️</div>
+          <h3>2. Elige</h3>
+          <p>
+            Explora la carta y selecciona el plato que quieras ver.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">✨</div>
+          <h3>3. Visualiza</h3>
+          <p>
+            Mira el plato en 3D y, si tu móvil lo permite, colócalo virtualmente sobre tu mesa.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <div class="menu" id="carta">
+
+      <div class="menu-inner">
+
+        <h2 class="section-title">
+          Nuestra carta
+        </h2>
+
+        <p class="section-text">
+          Descubre nuestros platos en 3D.
+        </p>
+
+        <article class="plato">
+
+          <model-viewer
+            src="modelos/12_8_2026.glb"
+            camera-controls
+            auto-rotate
+            ar
+            shadow-intensity="1"
+            alt="Plato de ejemplo en 3D">
+
+            <button slot="ar-button" class="ar-button">
+              📱 Ver en mi mesa
+            </button>
+
+          </model-viewer>
+
+          <div class="plato-info">
+
+            <h3>
+              Plato de ejemplo
+            </h3>
+
+            <p>
+              Visualiza este plato en 3D y descubre cómo se vería en tu mesa.
+            </p>
+
+            <div class="precio">
+              12,90 €
+            </div>
+
+          </div>
+
+        </article>
+
+      </div>
+
+    </div>
 
   </main>
 
+
   <footer>
-    © 2026 3DFoodMenu
+    © 2026 3DFoodMenu · La carta que cobra vida.
   </footer>
 
 </body>
