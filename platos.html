@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platos - 3DFoodMenu</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  color: #222;
+}
+
+header {
+  background: #111;
+  color: white;
+  padding: 22px;
+}
+
+.contenedor {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px 20px;
+}
+
+.volver {
+  display: inline-block;
+  margin-bottom: 25px;
+  color: #555;
+  text-decoration: none;
+}
+
+h1 {
+  margin-bottom: 5px;
+}
+
+.subtitulo {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.formulario {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 7px 0 15px;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  font-size: 16px;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+button {
+  background: #111;
+  color: white;
+  border: 0;
+  padding: 12px 20px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+button:hover {
+  opacity: .85;
+}
+
+.platos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.plato {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+
+.plato img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background: #eee;
+}
+
+.info {
+  padding: 18px;
+}
+
+.precio {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.descripcion {
+  color: #666;
+  line-height: 1.5;
+}
+
+.eliminar {
+  background: #b00020;
+  margin-top: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="contenedor">
+    <strong>3DFoodMenu</strong>
+  </div>
+</header>
+
+<div class="contenedor">
+
+  <a class="volver" href="javascript:history.back()">← Volver</a>
+
+  <h1 id="titulo">Platos</h1>
+  <p class="subtitulo">
+    Gestiona los platos del restaurante.
+  </p>
+
+  <div class="formulario">
+
+    <h2>Añadir plato</h2>
+
+    <label>Nombre del plato</label>
+    <input id="nombre" type="text" placeholder="Ej. Paella de marisco">
+
+    <label>Precio (€)</label>
+    <input id="precio" type="number" step="0.01" placeholder="Ej. 18.50">
+
+    <label>Descripción</label>
+    <textarea id="descripcion" placeholder="Descripción del plato"></textarea>
+
+    <label>Imagen del plato</label>
+    <input id="imagen" type="text" placeholder="URL de la imagen">
+
+    <label>Modelo 3D</label>
+    <input id="modelo" type="text" placeholder="URL del modelo .glb">
+
+    <button onclick="agregarPlato()">+ Añadir plato</button>
+
+  </div>
+
+  <h2>Platos del restaurante</h2>
+
+  <div id="listaPlatos" class="platos"></div>
+
+</div>
+
+<script>
+
+const parametros = new URLSearchParams(window.location.search);
+const restaurante = parametros.get("restaurante") || "la-plaza";
+
+document.getElementById("titulo").textContent =
+  "Platos - " + restaurante.replace("-", " ").replace(/\b\w/g, l => l.toUpperCase());
+
+const clave = "platos_" + restaurante;
+
+let platos = JSON.parse(localStorage.getItem(clave) || "[]");
+
+function guardar() {
+  localStorage.setItem(clave, JSON.stringify(platos));
+}
+
+function mostrarPlatos() {
+
+  const lista = document.getElementById("listaPlatos");
+
+  if (platos.length === 0) {
+    lista.innerHTML = `
+      <p style="color:#777;">
+        Todavía no hay platos. Añade el primero arriba.
+      </p>
+    `;
+    return;
+  }
+
+  lista.innerHTML = "";
+
+  platos.forEach((plato, indice) => {
+
+    const tarjeta = document.createElement("div");
+    tarjeta.className = "plato";
+
+    tarjeta.innerHTML = `
+      ${
+        plato.imagen
+        ? <img src="${plato.imagen}" alt="${plato.nombre}">
+        : <div style="height:180px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999;">Sin imagen</div>
+      }
+
+      <div class="info">
+
+        <h3>${plato.nombre}</h3>
+
+        <div class="precio">
+          ${Number(plato.precio).toFixed(2)} €
+        </div>
+
+        <div class="descripcion">
+          ${plato.descripcion}
+        </div>
+
+        ${
+          plato.modelo
+          ? <p>🧊 Modelo 3D añadido</p>
+          : <p style="color:#999;">Sin modelo 3D</p>
+        }
+
+        <button class="eliminar" onclick="eliminarPlato(${indice})">
+          Eliminar
+        </button>
+
+      </div>
+    `;
+
+    lista.appendChild(tarjeta);
+  });
+}
+
+function agregarPlato() {
+
+  const nombre = document.getElementById("nombre").value.trim();
+  const precio = document.getElementById("precio").value;
+  const descripcion = document.getElementById("descripcion").value.trim();
+  const imagen = document.getElementById("imagen").value.trim();
+  const modelo = document.getElementById("modelo").value.trim();
+
+  if (!nombre || !precio) {
+    alert("Introduce al menos el nombre y el precio.");
+    return;
+  }
+
+  platos.push({
+    nombre,
+    precio,
+    descripcion,
+    imagen,
+    modelo
+  });
+
+  guardar();
+  mostrarPlatos();
+
+  document.getElementById("nombre").value = "";
+  document.getElementById("precio").value = "";
+  document.getElementById("descripcion").value = "";
+  document.getElementById("imagen").value = "";
+  document.getElementById("modelo").value = "";
+}
+
+function eliminarPlato(indice) {
+
+  if (!confirm("¿Quieres eliminar este plato?")) {
+    return;
+  }
+
+  platos.splice(indice, 1);
+
+  guardar();
+  mostrarPlatos();
+}
+
+mostrarPlatos();
+
+</script>
+
+</body>
+</html>
