@@ -242,7 +242,7 @@ function mostrarPlatos() {
   });
 }
 
-function agregarPlato() {
+async function agregarPlato() {
 
   const nombre = document.getElementById("nombre").value.trim();
   const precio = document.getElementById("precio").value;
@@ -255,22 +255,68 @@ function agregarPlato() {
     return;
   }
 
-  platos.push({
-    nombre,
-    precio,
-    descripcion,
-    imagen,
-    modelo
-  });
+  const parametros = new URLSearchParams(window.location.search);
+  const restauranteNombre = parametros.get("restaurante") || "la-plaza";
 
-  guardar();
-  mostrarPlatos();
+  const nombreRestaurante = restauranteNombre
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, letra => letra.toUpperCase());
 
-  document.getElementById("nombre").value = "";
-  document.getElementById("precio").value = "";
-  document.getElementById("descripcion").value = "";
-  document.getElementById("imagen").value = "";
-  document.getElementById("modelo").value = "";
+  try {
+
+    const { data: restauranteData, error: restauranteError } =
+      await supabase
+        .from("restaurantes")
+        .select('identificación')
+        .eq("nombre", nombreRestaurante)
+        .single();
+
+    if (restauranteError || !restauranteData) {
+      alert("No se ha encontrado el restaurante.");
+      console.error(restauranteError);
+      return;
+    }
+
+    const { error } = await supabase
+      .from("platos")
+      .insert({
+        nombre: nombre,
+        precio: Number(precio),
+        descripcion: descripcion,
+        url_de_la_imagen: imagen,
+        url_del_modelo_3d: modelo,
+        restaurante_id: restauranteData.identificación
+      });
+
+    if (error) {
+      alert("Error al guardar el plato en Supabase.");
+      console.error(error);
+      return;
+    }
+
+    platos.push({
+      nombre,
+      precio,
+      descripcion,
+      imagen,
+      modelo
+    });
+
+    guardar();
+    mostrarPlatos();
+
+    document.getElementById("nombre").value = "";
+    document.getElementById("precio").value = "";
+    document.getElementById("descripcion").value = "";
+    document.getElementById("imagen").value = "";
+    document.getElementById("modelo").value = "";
+
+    alert("Plato añadido correctamente.");
+
+  } catch (error) {
+    console.error(error);
+    alert("Ha ocurrido un error al guardar el plato.");
+  }
 }
 
 function eliminarPlato(indice) {
