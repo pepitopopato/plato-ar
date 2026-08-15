@@ -214,13 +214,13 @@ function mostrarPlatos() {
     tarjeta.className = "plato";
 
     tarjeta.innerHTML = `
-      ${
-        plato.imagen
-        ? <img src="${plato.imagen}" alt="${plato.nombre}">
-        : <div style="height:180px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999;">Sin imagen</div>
-      }
+${
+    plato.imagen
+        ? `<img src="${plato.imagen}" alt="${plato.nombre}">`
+        : `<div style="height:180px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999;">Sin imagen</div>`
+}
 
-      <div class="info">
+<div class="info">
 
         <h3>${plato.nombre}</h3>
 
