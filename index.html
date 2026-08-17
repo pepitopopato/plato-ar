@@ -365,6 +365,55 @@ body::after {
     opacity: 0;
   }
 }
+
+    .rayo {
+  position: fixed;
+  top: -20px;
+  right: 15%;
+  width: 4px;
+  height: 240px;
+  background: #00e5ff;
+  box-shadow:
+    0 0 8px #00e5ff,
+    0 0 20px #00e5ff,
+    0 0 45px rgba(0,229,255,0.8);
+  clip-path: polygon(
+    45% 0,
+    70% 0,
+    55% 35%,
+    80% 35%,
+    35% 100%,
+    45% 52%,
+    20% 52%
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  animation: rayoCaida 4s infinite;
+}
+
+@keyframes rayoCaida {
+
+  0%, 42%, 100% {
+    opacity: 0;
+  }
+
+  43% {
+    opacity: 1;
+  }
+
+  44% {
+    opacity: 0.15;
+  }
+
+  45% {
+    opacity: 0.9;
+  }
+
+  47% {
+    opacity: 0;
+  }
+}
     
   </style>
 </head>
