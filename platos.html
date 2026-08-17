@@ -214,36 +214,17 @@ function mostrarPlatos() {
     tarjeta.className = "plato";
 
     tarjeta.innerHTML = `
-${
+  ${
     plato.imagen
-        ? `<img src="${plato.imagen}" alt="${plato.nombre}">`
-        : `<div style="height:180px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999;">Sin imagen</div>`
-}
+      ? `<img src="${plato.imagen}" alt="${plato.nombre}" style="width:100%;height:180px;object-fit:cover;">`
+      : `<div style="height:180px;background:#eee;display:flex;align-items:center;justify-content:center;">Sin imagen</div>`
+  }
 
-<div class="info">
-
-        <h3>${plato.nombre}</h3>
-
-        <div class="precio">
-          ${Number(plato.precio).toFixed(2)} €
-        </div>
-
-        <div class="descripcion">
-          ${plato.descripcion}
-        </div>
-
-        ${
-          plato.modelo
-          ? <p>🧊 Modelo 3D añadido</p>
-          : <p style="color:#999;">Sin modelo 3D</p>
-        }
-
-        <button class="eliminar" onclick="eliminarPlato(${indice})">
-          Eliminar
-        </button>
-
-      </div>
-    `;
+  <div class="info">
+    <h3>${plato.nombre}</h3>
+    <p class="precio">${plato.precio} €</p>
+    <p>${plato.descripcion || ""}</p>
+  </div>
 
     lista.appendChild(tarjeta);
   });
