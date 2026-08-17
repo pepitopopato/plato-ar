@@ -265,9 +265,9 @@
         </div>
 
         <h1>
-          La carta<br>
-          que cobra vida.
-        </h1>
+  <span id="heroRestaurante">La Plaza</span><br>
+  La carta que cobra vida.
+</h1>
 
         <p class="subtitle">
           Escanea el QR de tu mesa, elige un plato
@@ -386,6 +386,9 @@
   </footer>
   
 <script>
+  document.getElementById("heroRestaurante").textContent =
+    datos.nombre;
+
   document.getElementById("nombreRestaurante").textContent =
     datos.nombre;
 
