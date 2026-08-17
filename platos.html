@@ -52,7 +52,15 @@ h1 {
   margin-bottom: 30px;
   box-shadow: 0 2px 10px rgba(0,0,0,.06);
 }
-
+select {
+  width: 100%;
+  padding: 12px;
+  margin: 7px 0 15px;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  font-size: 16px;
+  background: white;
+}
 input,
 textarea {
   width: 100%;
@@ -176,98 +184,233 @@ button:hover {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const SUPABASE_URL = "https://afqaulrezbktcyermaui.supabase.co";
-const SUPABASE_KEY = "sb_publishable_PFwnoSTu7-w9ijYx1ccLKg_35-OIHcG";
 
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+const SUPABASE_URL =
+  "https://afqaulrezbktcyermaui.supabase.co";
 
-const parametros = new URLSearchParams(window.location.search);
-const restauranteSlug = parametros.get("restaurante") || "la-plaza";
+const SUPABASE_KEY =
+  "sb_publishable_PFwnoSTu7-w9ijYx1ccLKg_35-OIHcG";
 
-const nombreRestaurante = restauranteSlug
-  .replace(/-/g, " ")
-  .replace(/\b\w/g, letra => letra.toUpperCase());
+const supabase =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* ==============================
+   RESTAURANTE ACTUAL
+============================== */
+
+const parametros =
+  new URLSearchParams(window.location.search);
+
+const restauranteSlug =
+  parametros.get("restaurante") || "la-plaza";
+
+const nombreRestaurante =
+  restauranteSlug
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, letra =>
+      letra.toUpperCase()
+    );
 
 document.getElementById("titulo").textContent =
   "Platos - " + nombreRestaurante;
 
 
+/* ==============================
+   CARGAR CATEGORÍAS
+============================== */
+
+async function cargarCategorias() {
+
+  const selector =
+    document.getElementById("categoria");
+
+  const { data, error } =
+    await supabase
+      .from("categorias")
+      .select("id, nombre")
+      .order("nombre");
+
+  if (error) {
+
+    console.error(
+      "Error cargando categorías:",
+      error
+    );
+
+    return;
+  }
+
+  data.forEach(categoria => {
+
+    const opcion =
+      document.createElement("option");
+
+    opcion.value = categoria.id;
+
+    opcion.textContent =
+      categoria.nombre;
+
+    selector.appendChild(opcion);
+
+  });
+
+}
+
+
+/* ==============================
+   CARGAR PLATOS
+============================== */
+
 async function cargarPlatos() {
 
-  const lista = document.getElementById("listaPlatos");
+  const lista =
+    document.getElementById("listaPlatos");
 
-  lista.innerHTML = "<p style='color:#777;'>Cargando platos...</p>";
+  lista.innerHTML =
+    "<p style='color:#777;'>Cargando platos...</p>";
 
-  const { data: restaurante, error: errorRestaurante } =
-    await supabase
-      .from("restaurantes")
-      .select("id, nombre")
-      .eq("nombre", nombreRestaurante)
-      .single();
 
-  if (errorRestaurante || !restaurante) {
+  /* BUSCAR RESTAURANTE */
+
+  const {
+    data: restaurante,
+    error: errorRestaurante
+  } = await supabase
+
+    .from("restaurantes")
+
+    .select("id, nombre")
+
+    .eq(
+      "nombre",
+      nombreRestaurante
+    )
+
+    .single();
+
+
+  if (
+    errorRestaurante ||
+    !restaurante
+  ) {
+
     lista.innerHTML =
       "<p style='color:#b00020;'>No se ha encontrado el restaurante.</p>";
 
-    console.error("Error restaurante:", errorRestaurante);
+    console.error(
+      "Error restaurante:",
+      errorRestaurante
+    );
+
     return;
   }
 
-  const { data: platos, error: errorPlatos } =
-    await supabase
-      .from("platos")
-      .select("*")
-      .eq("restaurante_id", restaurante.id);
+
+  /* BUSCAR PLATOS */
+
+  const {
+    data: platos,
+    error: errorPlatos
+  } = await supabase
+
+    .from("platos")
+
+    .select("*")
+
+    .eq(
+      "restaurante_id",
+      restaurante.id
+    )
+
+    .order("nombre");
+
 
   if (errorPlatos) {
+
     lista.innerHTML =
       "<p style='color:#b00020;'>Error al cargar los platos.</p>";
 
-    console.error("Error platos:", errorPlatos);
+    console.error(
+      "Error platos:",
+      errorPlatos
+    );
+
     return;
   }
 
-  if (!platos || platos.length === 0) {
+
+  /* NO HAY PLATOS */
+
+  if (
+    !platos ||
+    platos.length === 0
+  ) {
+
     lista.innerHTML = `
       <p style="color:#777;">
-        Todavía no hay platos. Añade el primero arriba.
+        Todavía no hay platos.
+        Añade el primero arriba.
       </p>
     `;
+
     return;
   }
+
+
+  /* MOSTRAR PLATOS */
 
   lista.innerHTML = "";
 
+
   platos.forEach(plato => {
 
-    const tarjeta = document.createElement("div");
-    tarjeta.className = "plato";
+    const tarjeta =
+      document.createElement("div");
+
+    tarjeta.className =
+      "plato";
+
 
     tarjeta.innerHTML = `
+
       ${
         plato.url_de_la_imagen
-          ? `<img
-              src="${plato.url_de_la_imagen}"
-              alt="${plato.nombre}"
-              style="width:100%;height:180px;object-fit:cover;">
-            `
-          : `
-            <div style="
+
+        ? `
+          <img
+            src="${plato.url_de_la_imagen}"
+            alt="${plato.nombre}"
+            style="
+              width:100%;
               height:180px;
-              background:#eee;
-              display:flex;
-              align-items:center;
-              justify-content:center;">
-              Sin imagen
-            </div>
-          `
+              object-fit:cover;
+            "
+          >
+        `
+
+        : `
+          <div style="
+            height:180px;
+            background:#eee;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+          ">
+            Sin imagen
+          </div>
+        `
       }
 
+
       <div class="info">
-        <h3>${plato.nombre}</h3>
+
+        <h3>
+          ${plato.nombre}
+        </h3>
 
         <p class="precio">
           ${plato.precio ?? 0} €
@@ -279,113 +422,298 @@ async function cargarPlatos() {
 
         <button
           class="eliminar"
-          onclick="eliminarPlato('${plato.id}')">
+          onclick="eliminarPlato('${plato.id}')"
+        >
           Eliminar
         </button>
+
       </div>
     `;
 
+
     lista.appendChild(tarjeta);
+
   });
+
 }
 
 
+/* ==============================
+   AÑADIR PLATO
+============================== */
+
 async function agregarPlato() {
 
-  const nombre = document.getElementById("nombre").value.trim();
-  const precio = document.getElementById("precio").value;
-  const descripcion = document.getElementById("descripcion").value.trim();
-  const imagen = document.getElementById("imagen").value.trim();
-  const modelo = document.getElementById("modelo").value.trim();
+  const nombre =
+    document
+      .getElementById("nombre")
+      .value
+      .trim();
 
-  if (!nombre || !precio) {
-    alert("Introduce al menos el nombre y el precio.");
+
+  const precio =
+    document
+      .getElementById("precio")
+      .value;
+
+
+  const descripcion =
+    document
+      .getElementById("descripcion")
+      .value
+      .trim();
+
+
+  const imagen =
+    document
+      .getElementById("imagen")
+      .value
+      .trim();
+
+
+  const modelo =
+    document
+      .getElementById("modelo")
+      .value
+      .trim();
+
+
+  const categoria =
+    document
+      .getElementById("categoria")
+      .value;
+
+
+  /* COMPROBAR DATOS */
+
+  if (
+    !nombre ||
+    !precio ||
+    !categoria
+  ) {
+
+    alert(
+      "Introduce el nombre, el precio y selecciona una categoría."
+    );
+
     return;
   }
 
-  const boton = document.querySelector("button[onclick='agregarPlato()']");
+
+  const boton =
+    document.querySelector(
+      "button[onclick='agregarPlato()']"
+    );
+
+
   boton.disabled = true;
-  boton.textContent = "Guardando...";
+
+  boton.textContent =
+    "Guardando...";
+
 
   try {
 
-    const { data: restaurante, error: errorRestaurante } =
-      await supabase
-        .from("restaurantes")
-        .select("id, nombre")
-        .eq("nombre", nombreRestaurante)
-        .single();
 
-    if (errorRestaurante || !restaurante) {
-      console.error(errorRestaurante);
-      alert("No se ha encontrado el restaurante.");
+    /* BUSCAR RESTAURANTE */
+
+    const {
+      data: restaurante,
+      error: errorRestaurante
+    } = await supabase
+
+      .from("restaurantes")
+
+      .select("id, nombre")
+
+      .eq(
+        "nombre",
+        nombreRestaurante
+      )
+
+      .single();
+
+
+    if (
+      errorRestaurante ||
+      !restaurante
+    ) {
+
+      console.error(
+        errorRestaurante
+      );
+
+      alert(
+        "No se ha encontrado el restaurante."
+      );
+
       return;
     }
 
-    const { data, error } =
-      await supabase
-        .from("platos")
-        .insert({
-          restaurante_id: restaurante.id,
-          nombre: nombre,
-          precio: Number(precio),
-          descripcion: descripcion,
-          url_de_la_imagen: imagen || null,
-          url_del_modelo_3d: modelo || null
-        })
-        .select()
-        .single();
+
+    /* GUARDAR PLATO */
+
+    const {
+      data,
+      error
+    } = await supabase
+
+      .from("platos")
+
+      .insert({
+
+        restaurante_id:
+          restaurante.id,
+
+        categoria_id:
+          categoria,
+
+        nombre:
+          nombre,
+
+        precio:
+          Number(precio),
+
+        descripcion:
+          descripcion,
+
+        url_de_la_imagen:
+          imagen || null,
+
+        url_del_modelo_3d:
+          modelo || null
+
+      })
+
+      .select()
+      .single();
+
 
     if (error) {
-      console.error("Error Supabase:", error);
-      alert("Error al guardar el plato: " + error.message);
+
+      console.error(
+        "ERROR SUPABASE:",
+        error
+      );
+
+      alert(
+        "Error al guardar el plato: " +
+        error.message
+      );
+
       return;
     }
 
-    alert("Plato añadido correctamente.");
 
-    document.getElementById("nombre").value = "";
-    document.getElementById("precio").value = "";
-    document.getElementById("descripcion").value = "";
-    document.getElementById("imagen").value = "";
-    document.getElementById("modelo").value = "";
+    /* TODO CORRECTO */
+
+    alert(
+      "Plato añadido correctamente."
+    );
+
+
+    /* LIMPIAR FORMULARIO */
+
+    document.getElementById(
+      "nombre"
+    ).value = "";
+
+    document.getElementById(
+      "precio"
+    ).value = "";
+
+    document.getElementById(
+      "descripcion"
+    ).value = "";
+
+    document.getElementById(
+      "imagen"
+    ).value = "";
+
+    document.getElementById(
+      "modelo"
+    ).value = "";
+
+    document.getElementById(
+      "categoria"
+    ).value = "";
+
+
+    /* VOLVER A CARGAR */
 
     await cargarPlatos();
+
 
   } catch (error) {
 
     console.error(error);
-    alert("Ha ocurrido un error al guardar el plato.");
+
+    alert(
+      "Ha ocurrido un error al guardar el plato."
+    );
+
 
   } finally {
 
     boton.disabled = false;
-    boton.textContent = "+ Añadir plato";
+
+    boton.textContent =
+      "+ Añadir plato";
+
   }
+
 }
 
+
+/* ==============================
+   ELIMINAR PLATO
+============================== */
 
 async function eliminarPlato(id) {
 
-  if (!confirm("¿Quieres eliminar este plato?")) {
+  if (
+    !confirm(
+      "¿Quieres eliminar este plato?"
+    )
+  ) {
+
     return;
   }
 
-  const { error } =
-    await supabase
-      .from("platos")
-      .delete()
-      .eq("id", id);
+
+  const {
+    error
+  } = await supabase
+
+    .from("platos")
+
+    .delete()
+
+    .eq("id", id);
+
 
   if (error) {
+
     console.error(error);
-    alert("No se ha podido eliminar el plato.");
+
+    alert(
+      "No se ha podido eliminar el plato."
+    );
+
     return;
   }
 
+
   await cargarPlatos();
+
 }
 
+
+/* ==============================
+   INICIAR PÁGINA
+============================== */
+
+cargarCategorias();
 
 cargarPlatos();
 
