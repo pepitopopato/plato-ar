@@ -91,6 +91,20 @@ nav a:hover {
   z-index: 2;
   max-width: 700px;
 }
+    .hero::before {
+  content: "";
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: #00e5ff;
+  border-radius: 50%;
+  filter: blur(180px);
+  opacity: 0.12;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
 
     .badge {
       display: inline-block;
