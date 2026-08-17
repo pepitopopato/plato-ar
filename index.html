@@ -396,6 +396,10 @@
 
   document.getElementById("descripcionRestaurante").textContent =
     datos.descripcion;
+
+  if (restaurante !== "la-plaza") {
+    document.getElementById("platosLaPlaza").style.display = "none";
+  }
 </script>
   
 </body>
