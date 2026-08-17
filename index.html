@@ -231,7 +231,25 @@
 </head>
 
 <body>
+  
+<script>
+  const parametros = new URLSearchParams(window.location.search);
+  const restaurante = parametros.get("restaurante") || "la-plaza";
 
+  const restaurantes = {
+    "la-plaza": {
+      nombre: "La Plaza",
+      descripcion: "Descubre nuestros platos en 3D."
+    },
+
+    "el-puerto": {
+      nombre: "El Puerto",
+      descripcion: "Descubre nuestros platos en 3D."
+    }
+  };
+
+  const datos = restaurantes[restaurante] || restaurantes["la-plaza"];
+</script>
   <header>
     <div class="logo">3DFoodMenu</div>
   </header>
@@ -316,11 +334,11 @@
 
       <div class="menu-inner">
 
-        <h2 class="section-title">
+        <h2 id="nombreRestaurante" class="section-title">
           Nuestra carta
         </h2>
 
-        <p class="section-text">
+        <p id="descripcionRestaurante" class="section-text">
           Descubre nuestros platos en 3D.
         </p>
 
@@ -366,6 +384,14 @@
   <footer>
     © 2026 3DFoodMenu · La carta que cobra vida.
   </footer>
+  
+<script>
+  document.getElementById("nombreRestaurante").textContent =
+    datos.nombre;
 
+  document.getElementById("descripcionRestaurante").textContent =
+    datos.descripcion;
+</script>
+  
 </body>
 </html>
