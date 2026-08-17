@@ -193,13 +193,14 @@ const supabase = window.supabase.createClient(
 );
 
 async function cargarPlatos() {
-
   const parametros = new URLSearchParams(window.location.search);
-  const restauranteSlug = parametros.get("restaurante") || "la-plaza";
+  const slug = parametros.get("restaurante") || "la-plaza";
 
-  const nombreRestaurante = restauranteSlug
+  const nombreRestaurante = slug
     .replace(/-/g, " ")
     .replace(/\b\w/g, letra => letra.toUpperCase());
+
+  const contenedor = document.getElementById("platosRestaurante");
 
   const { data: restaurante, error: errorRestaurante } =
     await supabase
@@ -209,6 +210,7 @@ async function cargarPlatos() {
       .single();
 
   if (errorRestaurante || !restaurante) {
+    contenedor.innerHTML = "<p>No se encontró el restaurante.</p>";
     console.error(errorRestaurante);
     return;
   }
@@ -220,11 +222,29 @@ async function cargarPlatos() {
       .eq("restaurante_id", restaurante.id);
 
   if (errorPlatos) {
+    contenedor.innerHTML = "<p>Error al cargar los platos.</p>";
     console.error(errorPlatos);
     return;
   }
 
-  console.log("Platos encontrados:", platos);
+  if (!platos || platos.length === 0) {
+    contenedor.innerHTML = "<p>Este restaurante todavía no tiene platos.</p>";
+    return;
+  }
+
+  contenedor.innerHTML = "";
+
+  platos.forEach(plato => {
+    const tarjeta = document.createElement("div");
+    tarjeta.className = "tarjeta";
+
+    tarjeta.innerHTML = `
+      <h3>${plato.nombre}</h3>
+      <p>${plato.descripcion || ""}</p>
+    `;
+
+    contenedor.appendChild(tarjeta);
+  });
 }
 
 cargarPlatos();
