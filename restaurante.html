@@ -174,12 +174,53 @@
     document.getElementById("descripcionRestaurante").textContent =
       "No se ha encontrado el restaurante solicitado.";
   }
-</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 const SUPABASE_URL = "https://afqaulrezbktcyermaui.supabase.co";
 const SUPABASE_KEY = "sb_publishable_PFwnoSTu7-w9ijYx1ccLKg_35-OIHcG";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+async function cargarPlatos() {
+
+  const parametros = new URLSearchParams(window.location.search);
+  const restauranteSlug = parametros.get("restaurante") || "la-plaza";
+
+  const nombreRestaurante = restauranteSlug
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, letra => letra.toUpperCase());
+
+  const { data: restaurante, error: errorRestaurante } =
+    await supabase
+      .from("restaurantes")
+      .select("id, nombre")
+      .eq("nombre", nombreRestaurante)
+      .single();
+
+  if (errorRestaurante || !restaurante) {
+    console.error(errorRestaurante);
+    return;
+  }
+
+  const { data: platos, error: errorPlatos } =
+    await supabase
+      .from("platos")
+      .select("*")
+      .eq("restaurante_id", restaurante.id);
+
+  if (errorPlatos) {
+    console.error(errorPlatos);
+    return;
+  }
+
+  console.log("Platos encontrados:", platos);
+}
+
+cargarPlatos();
 </script>
 
   </body>
