@@ -170,7 +170,12 @@ button:hover {
     <input id="imagen" type="text" placeholder="URL de la imagen">
 
     <label>Modelo 3D</label>
-    <input id="modelo" type="text" placeholder="URL del modelo .glb">
+<input
+  id="modelo"
+  type="text"
+  value="Malla_con_textura_1.glb"
+  placeholder="URL del modelo .glb"
+>
 
     <button onclick="agregarPlato()">+ Añadir plato</button>
 
@@ -181,6 +186,9 @@ button:hover {
   <div id="listaPlatos" class="platos"></div>
 
 </div>
+  <script type="module"
+  src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
