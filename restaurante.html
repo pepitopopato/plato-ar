@@ -256,14 +256,35 @@ async function cargarPlatos() {
   contenedor.innerHTML = "";
 
   platos.forEach(plato => {
-    const tarjeta = document.createElement("div");
-    tarjeta.className = "tarjeta";
+   const tarjeta = document.createElement("div");
+tarjeta.className = "tarjeta";
 
-    tarjeta.innerHTML = `
-      <h3>${plato.nombre}</h3>
-      <p>${plato.descripcion || ""}</p>
-    `;
+tarjeta.innerHTML = `
+  <h3>${plato.nombre}</h3>
 
+  ${
+    plato.url_del_modelo_3d
+      ? `
+        <model-viewer
+          src="${plato.url_del_modelo_3d}"
+          camera-controls
+          auto-rotate
+          ar
+          shadow-intensity="1"
+          style="
+            width:100%;
+            height:350px;
+          "
+          alt="${plato.nombre}">
+        </model-viewer>
+      `
+      : `
+        <p>
+          ${plato.descripcion || ""}
+        </p>
+      `
+  }
+`;
     contenedor.appendChild(tarjeta);
   });
 }
