@@ -385,61 +385,69 @@ async function cargarPlatos() {
 
     tarjeta.innerHTML = `
 
-      ${
-        plato.url_de_la_imagen
-
-        ? `
-          <img
-            src="${plato.url_de_la_imagen}"
-            alt="${plato.nombre}"
-            style="
-              width:100%;
-              height:180px;
-              object-fit:cover;
-            "
-          >
-        `
-
-        : `
-          <div style="
-            height:180px;
-            background:#eee;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-          ">
-            Sin imagen
-          </div>
-        `
-      }
-
-
-      <div class="info">
-
-        <h3>
-          ${plato.nombre}
-        </h3>
-
-        <p class="precio">
-          ${plato.precio ?? 0} €
-        </p>
-
-        <p>
-          ${plato.descripcion || ""}
-        </p>
-
-        <button
-          class="eliminar"
-          onclick="eliminarPlato('${plato.id}')"
-        >
-          Eliminar
-        </button>
-
+  ${
+    plato.url_del_modelo_3d
+    ? `
+      <model-viewer
+        src="${plato.url_del_modelo_3d}"
+        camera-controls
+        auto-rotate
+        shadow-intensity="1"
+        style="
+          width:100%;
+          height:280px;
+          background:#eee;
+        ">
+      </model-viewer>
+    `
+    : plato.url_de_la_imagen
+    ? `
+      <img
+        src="${plato.url_de_la_imagen}"
+        alt="${plato.nombre}"
+        style="
+          width:100%;
+          height:180px;
+          object-fit:cover;
+        "
+      >
+    `
+    : `
+      <div style="
+        height:180px;
+        background:#eee;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      ">
+        Sin imagen
       </div>
-    `;
+    `
+  }
 
+  <div class="info">
 
-    lista.appendChild(tarjeta);
+    <h3>
+      ${plato.nombre}
+    </h3>
+
+    <p class="precio">
+      ${plato.precio ?? 0} €
+    </p>
+
+    <p>
+      ${plato.descripcion || ""}
+    </p>
+
+    <button
+      class="eliminar"
+      onclick="eliminarPlato('${plato.id}')"
+    >
+      Eliminar
+    </button>
+
+  </div>
+`;
 
   });
 
